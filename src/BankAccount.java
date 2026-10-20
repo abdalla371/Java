@@ -1,19 +1,15 @@
 void main() {
-    savingAccount s=new savingAccount("SAV-1",200);
-    CurrentAccount c=new CurrentAccount("CUR-1",200);
-    StudentAccount studAccount=new StudentAccount("STU-1",200);
+BankAccount acc1=new savingAccount("SAV-1240",200);
+BankAccount acc2=new CurrentAccount("CAP-99240",200);
+BankAccount acc3=new StudentAccount("FAG-30240",200);
 
-    System.out.println("Each account has 200. Each run runs withdraw 300");
-    s.withdraw(300);s.show();
-    c.withdraw(300);c.show();
-    studAccount.withdraw(300);studAccount.show();
-
-    System.out.println("student tyies to withdraw 80");
-    studAccount.withdraw(80);
-    studAccount.show();
-
+acc1.deposit(50); acc1.withdraw(150);acc1.show();
+acc2.deposit(50); acc2.withdraw(300);acc2.show();
+acc3.deposit(50); acc3.withdraw(80);acc3.show();
 }
-public class BankAccount {
+
+
+abstract public class BankAccount{
     private String accountNumber;
     protected double balance;
 
@@ -21,42 +17,45 @@ public class BankAccount {
         this.accountNumber=accountNumber;
         this.balance=balance;
     }
-    public void withdraw(double amount){
-        if(amount>balance) refuse("Not enough money");
-        else balance-=amount;
-    }
-    public void refuse(String why){
-        System.out.println(" "+accountNumber+"Refused"+why);
-    }
-    public void show(){
-        System.out.println(" "+accountNumber+" Balance: "+balance);
-    }
-}
-public class savingAccount extends BankAccount{
-    savingAccount(String name,double balance){super(name,balance);}
-    @Override
-    public void withdraw(double amount){
-        if(balance-amount<50) refuse("must keep atleast 50");
-        else balance-=amount;
-    }
-}
-public class CurrentAccount extends BankAccount{
-    CurrentAccount(String name,double balance){super(name,balance);}
-    @Override
-    public void withdraw(double amount){
-        if(balance-amount<-200) refuse("must keep atleast 50");
-        else balance-=amount;
-    }
-}
-public class StudentAccount  extends BankAccount{
-    StudentAccount(String name,double balance){super(name,balance);}
-        @Override
-        public void withdraw(double amount){
-            if(amount>100) refuse("Max 100 per withdrawal");
-            else super.withdraw(amount);
+    abstract void withdraw(double amount);
+    public void deposit(double amount){
+        if(amount<0){
+            System.out.println("Deposit amount must be more than 0");
         }
-}
+        balance+=amount;
+    }
+    void refuse(String why){
+        System.out.println(" "+accountNumber+"Refused "+why);
+    }
+    void show(){
+        System.out.println(" "+accountNumber+", Balance: "+balance);
+    }
 
+}
+class savingAccount extends BankAccount{
+    savingAccount(String accountNumber,double balance){super(accountNumber,balance);}
+    void withdraw(double amount){
+        if(balance-amount<50) refuse("Balance must Keep atleast 50");
+        else balance+=amount;
+    }
+}
+class CurrentAccount extends BankAccount{
+    CurrentAccount(String accountNumber,double balance){super(accountNumber,balance);}
+    void withdraw(double amount){
+        if(balance-amount<-200) refuse("Overdraft limit is 200");
+        else balance+=amount;
+    }
+}
+class StudentAccount extends BankAccount{
+    StudentAccount(String accountNumber,double balance){super(accountNumber,balance);}
+    void withdraw(double amount){
+        if(amount>100) refuse("Max 100 per withdrawal");
+        else if (amount>balance) {
+            refuse("Not enough money");
+
+        } else balance+=amount;
+    }
+}
 
 
 
